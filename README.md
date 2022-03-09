@@ -14,7 +14,7 @@ One way in which this application helps overcome this issue is that it allows fo
 * [Recent Thermal Activity](https://www.arcgis.com/home/item.html?id=b8f4033069f141729ffb298b7418b653)
 * [Sentinel-2 Imagery](https://www.arcgis.com/home/item.html?id=fd61b9e0c69c4e14bebd50a9a968348c)
 * [Protected Areas](https://www.arcgis.com/home/item.html?id=ae78aeb913a343d69e950b53e29076f7)
-* [Populaiton Estimate](https://www.arcgis.com/home/item.html?id=92d3005feb84428a8f85160f2451ec63)
+* [Population Estimate](https://www.arcgis.com/home/item.html?id=92d3005feb84428a8f85160f2451ec63)
 * [Croplands](https://www.arcgis.com/home/item.html?id=1453082255024699af55c960bc3dc1fe)
 
 #### For questions about the demo web application:
