@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <!-- Responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <!-- End Responsive -->
+    <link rel="icon" href="./assets/favicon.ico" sizes="32x32" type="image/vnd.microsoft.icon">
+    <link rel="stylesheet" href="https://s3-us-west-1.amazonaws.com/patterns.esri.com/files/calcite-web/1.2.5/css/calcite-web.min.css">
+    <link rel="stylesheet" href="https://js.arcgis.com/4.22/esri/css/main.css">
+    <link rel="stylesheet" href="./styles/main.css">
+    <script src="./app/dojo.js"></script>
+    <script src="https://js.arcgis.com/4.22/"></script>
+    <script>require(["Application/init"]);</script>
+  </head>
+  <body class="configurable-application--loading">
+
+    <!-- DETAILS -->
+    <div class="js-modal modal-overlay" data-modal="app-details-dialog">
+      <div id="info-dialog-content" class="modal-content column-15 loading" aria-labelledby="modal" role="dialog">
+        <span class="js-modal-toggle esri-interactive icon-ui-close icon-ui-gray right" aria-label="close-modal"></span>
+        <!--<h3 class="trailer-half text-white">Deforestation in the Amazon Today</h3>-->
+        <h3 class="trailer-half text-white">Our World on Fire</h3>
+        <div class="panel panel-dark-blue">
+          <div class="font-size-1">
+            See what others can't by using a simple and focused workflow that combines fire activity and imagery to discover affected areas using curated content from the
+            <a href="https://livingatlas.arcgis.com/en/browse/#q=fire" target="_blank" class="link-white avenir-italic">
+              ArcGIS Living Atlas of the World.
+              <span class="icon-ui-link-external font-size-0"></span>
+            </a>
+          </div>
+          <div class="font-size-0 leader-half">
+            NOTE: the available dates in the thermal activity, burn areas, and imagery
+            <span class="text-rule">don't always match.</span>
+            One way in which this application helps overcome this issue is that it allows for you to inspect thermal activity at a location and then use the availble imagery to discover how that location has changed recently.
+          </div>
+          <ol class="list-numbered font-size-0 padding-trailer-0 trailer-0">
+            <li>
+              Use the list of
+              <span class="avenir-italic">Active Burn Areas</span>
+              as a guide to zoom into specific locations.
+            </li>
+            <li>
+              View recent changes at a location by using the list of available dates for the
+              <span class="avenir-italic">Sentinel-2</span>
+              imagery.
+            </li>
+            <li>
+              Additional layers (protected areas, population, and croplands) may provide context about the changes.
+            </li>
+          </ol>
+        </div>
+        <div class="leader-1 content-row">
+          <img src="./assets/esri_science_of_where_white.png" class="left">
+          <div id="app-details-loading-label" class="avenir-italic text-white font-size-1 margin-right-2">loading...</div>
+          <button id="app-details-ok-btn" class="btn btn-clear-white js-modal-toggle btn-disabled">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW AOI -->
+    <div class="js-modal modal-overlay" data-modal="new-aoi-dialog">
+      <div class="modal-content" aria-labelledby="modal" role="dialog">
+        <h3 class="trailer-half text-blue">Create New Area of Interest</h3>
+        <div class="panel trailer-half column-10">
+          <label class="trailer-half">
+            <span>Name</span>
+            <input id="aoi-name-input" class="input-error" type="text" placeholder="new scenario name" required>
+          </label>
+          <label class="text-right trailer-0">
+            <button class="hide"></button>
+            <span class="avenir-italic font-size--3 text-dark-gray">suggestions:</span>
+            <button class="btn-link btn-suggestion esri-interactive" data-suggestion="place" title="use the place name at the view center">place</button>
+            <span>|</span>
+            <button class="btn-link btn-suggestion esri-interactive" data-suggestion="location" title="use the coordinates at the view center">location</button>
+            <span>|</span>
+            <button class="btn-link btn-suggestion esri-interactive" data-suggestion="date" title="use the current date and time">date</button>
+          </label>
+        </div>
+        <div class="text-right">
+          <img src="./assets/esri_science_of_where.png" class="left">
+          <button id="add-aoi-btn" class="btn btn-disabled">create</button>
+          <button class="btn btn-red js-modal-toggle">cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOP NAVIGATION -->
+    <header id="header-panel" class="panel panel-dark panel-no-padding panel-no-border padding-left-1 padding-right-1">
+      <!-- APP TITLE -->
+      <span id="app-title-node" class="top-nav-title text-white"></span>
+
+      <span class="top-nav-link margin-left-3">
+        <mark class="label label-yellow">FOR DEMO PURPOSES ONLY</mark>
+      </span>
+
+      <!-- RIGHT ALIGNED -->
+      <nav class="top-nav-list right" role="navigation">
+
+        <!-- AUTO SWIPE -->
+        <span id="auto-swipe-btn" class="top-nav-link text-white icon-ui-play btn-disabled">Auto Swipe</span>
+
+        <!-- SIGN IN NODE -->
+        <span id="sign-in-node" class="top-nav-link text-white esri-interactive icon-ui-user margin-left-1 hide">Sign In</span>
+
+        <!-- USER NODE -->
+        <div id="user-node" class="dropdown js-dropdown margin-left-1 text-white hide">
+          <span class="top-nav-link icon-ui-user text-white esri-interactive js-dropdown-toggle" tabindex="0" aria-haspopup="true" aria-expanded="false">
+            <span id="user-firstname-node"></span>
+          </span>
+          <nav class="dropdown-menu dropdown-right" role="menu">
+            <span class="dropdown-title">
+              <span id="user-fullname-node"></span>
+              <br>
+              <img id="user-thumb-node" src="">
+              <small><span id="username-node"></span></small>
+            </span>
+            <span id="sign-out-node" class="dropdown-link esri-interactive icon-ui-sign-out" role="menu-item">Sign Out</span>
+          </nav>
+        </div>
+
+        <!-- APP DETAILS -->
+        <span title="Details..." class="top-nav-link icon-ui-description text-white js-modal-toggle margin-left-1 esri-interactive" data-modal="app-details-dialog"></span>
+
+      </nav>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <div id="main-container">
+
+      <div id="right-container" class="panel panel-dark-blue panel-no-border padding-right-quarter column-6">
+
+        <div id="hotspot-panel" class="panel panel-dark padding-leader-quarter padding-trailer-half trailer-quarter">
+
+          <div id="hotspot-legend-info" class="padding-left-0 trailer-quarter">
+            <div class="trailer-quarter padding-left-half">
+              <span class="font-size--1 text-rule">Recent Thermal Activity</span>
+              <a id="hotspot-legend-source" class="link-white font-size--2 icon-ui-description icon-ui-flush esri-interactive right" title="View details..." href="https://www.arcgis.com/home/item.html?id=b8f4033069f141729ffb298b7418b653" target="_blank"></a>
+            </div>
+            <div id="hotspot-legend-node"></div>
+          </div>
+
+          <div id="hotspot-count-panel" class="panel panel-no-border padding-leader-quarter padding-trailer-quarter trailer-0">
+            <div class="padding-left-1 text-center font-size--2 avenir-italic">count within map extent</div>
+            <div id="hotspot-count-label" class="text-center font-size-6">---</div>
+            <div id="hotspot-dates-range-label" aria-label="Date range of the fire activity in the current map extent" class="tooltip tooltip-bottom tooltip-multiline trailer-0 text-center text-yellow font-size--1">
+              <span>--- --, ----</span>
+              <span>&nbsp;to&nbsp;</span>
+              <span>--- --, ----</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div id="burn-areas-panel" class="panel panel-dark panel-no-border padding-leader-quarter padding-trailer-half">
+          <div id="burn-areas-info" class="trailer-quarter padding-left-half">
+            <span id="burn-areas-toggle" class="esri-icon-visible esri-interactive leader-half margin-right-quarter"></span>
+            <span class="font-size--1 text-rule">Active Burn Areas</span>
+            <a class="link-white font-size--2 padding-leader-quarter icon-ui-description icon-ui-flush esri-interactive right hide" title="View details..." href="https://www.arcgis.com/home/item.html?id=fd61b9e0c69c4e14bebd50a9a968348c" target="_blank"></a>
+          </div>
+          <div id="data-list-panel" class="panel panel-dark panel-no-padding panel-no-border padding-leader-quarter">
+            <aside id="data-list-container" class="side-nav" aria-role="complementary">
+              <nav id="data-list" role="navigation" aria-labelledby="sidenav"></nav>
+            </aside>
+          </div>
+        </div>
+
+      </div>
+
+      <div id="left-container" class="panel panel-dark-blue panel-no-border padding-left-quarter padding-right-quarter">
+        <div id="view-container" class="panel-dark panel-no-border"></div>
+      </div>
+
+      <div id="legend-parent-container" class="panel panel-dark-blue panel-no-border padding-left-quarter column-5">
+
+        <div id="imagery-panel" class="panel panel-dark padding-leader-quarter padding-trailer-half trailer-quarter">
+
+          <div id="imagery-info" class="trailer-quarter padding-left-half">
+            <span class="font-size--1 text-rule">Sentinel-2 Imagery</span>
+            <a class="link-white font-size--2 padding-leader-quarter icon-ui-description icon-ui-flush esri-interactive right" title="View details..." href="https://www.arcgis.com/home/item.html?id=fd61b9e0c69c4e14bebd50a9a968348c" target="_blank"></a>
+          </div>
+
+          <label id="imagery-date" class="trailer-quarter tooltip tooltip-bottom tooltip-multiline" aria-label="Sort date for the Sentinel-2 imagery in current map extent...">
+            <div id="dates-range-label" class="text-center text-yellow font-size--1">--- -- ---- --:-- --</div>
+          </label>
+
+          <aside id="imagery-dates-container" class="side-nav trailer-quarter" aria-role="complementary">
+            <nav id="imagery-dates-list" role="navigation" aria-labelledby="sidenav"></nav>
+          </aside>
+
+          <label class="trailer-0 padding-left-half">
+            <span class="font-size--2">Cloud Cover</span>
+            <select id="cloud-cover-select" class="select-full font-size--3">
+              <option value="0.01">Clear cloud cover (1%)</option>
+              <option value="0.10" selected>Minimal cloud cover (10%)</option>
+              <option value="0.25">Some cloud cover (25%)</option>
+              <option value="0.50">More cloud dover (50%)</option>
+              <option value="1.00">All available images</option>
+            </select>
+          </label>
+
+        </div>
+
+        <div id="layers-panel" class="panel panel-dark padding-leader-quarter padding-trailer-0 font-size--1">
+          <div class="padding-left-half">
+            <span class="font-size-0 text-rule">Map Layers</span>
+          </div>
+          <div id="layers-list-node" class="trailer-0"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div id="zoomin-panel" class="panel panel-theme hide">
+      <div class="font-size-0">Zoom in to view the effects of recent thermal activity...</div>
+    </div>
+
+  </body>
+</html>

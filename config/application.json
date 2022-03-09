@@ -1,0 +1,27 @@
+{
+  "title": "Our World on Fire",
+  "appid": "",
+  "group": "",
+  "webmap": "d0b00580fcdf40e697bf6b5ee9aed591",
+  "webscene": "",
+  "portalUrl": "https://www.arcgis.com/",
+  "oauthappid": null,
+  "proxyUrl": null,
+  "units": "dual",
+  "helperServices": {
+    "geometry": {
+      "url": null
+    },
+    "printTask": {
+      "url": null
+    },
+    "elevationSync": {
+      "url": null
+    },
+    "geocode": [
+      {
+        "url": null
+      }
+    ]
+  }
+}

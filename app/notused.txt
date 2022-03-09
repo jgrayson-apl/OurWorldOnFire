@@ -1,0 +1,381 @@
+
+/*const defaultRenderingRule = imageryLayer.renderingRule.clone();
+        const defaultBaseRenderingRule = baseImageryLayer.renderingRule.clone();
+        const createClippingRasterFunction = (geometry, renderingRule) => {
+          return new RasterFunction({
+            functionName: "Clip",
+            functionArguments: {
+              ClippingGeometry: geometry.toJSON(),
+              ClippingType: 1,
+              Raster: renderingRule.toJSON()
+            }
+          });
+        };
+        const clipByGeometry = geometry => {
+          if(geometry){
+            imageryLayer.renderingRule = createClippingRasterFunction(geometry, defaultRenderingRule);
+            baseImageryLayer.renderingRule = createClippingRasterFunction(geometry, defaultBaseRenderingRule);
+          } else {
+            imageryLayer.renderingRule = defaultRenderingRule;
+            baseImageryLayer.renderingRule = defaultBaseRenderingRule;
+          }
+        };*/
+
+/*
+const defaultBaseMosaicRule = baseImageryLayer.mosaicRule.clone();
+const defaultMosaicRule = imageryLayer.mosaicRule.clone();
+const filterByAvailableDates = geometry => {
+
+  if(geometry){
+
+    const datesQuery = new Query({
+      where: `(${imageryLayerInfo.categoryField} = 1) AND (${imageryLayerInfo.cloudCoverField} <= 0.3)`,
+      returnGeometry: false,
+      geometry: geometry,
+      outFields: [imageryLayerInfo.acquisitionDateField, imageryLayerInfo.cloudCoverField],
+      orderByFields: `${imageryLayerInfo.acquisitionDateField} DESC`
+    });
+
+    const queryTask = new QueryTask({ url: imageryLayer.url });
+    queryTask.execute(datesQuery).then(datesFS => {
+      const dateFeatures = datesFS.features;
+
+      const oidsByDate = dateFeatures.reduce((list, dateFeature) => {
+        const oid = dateFeature.attributes[imageryLayerInfo.oidField];
+        const utcLabel = toUTCDateLabel(new Date(dateFeature.attributes[imageryLayerInfo.acquisitionDateField]));
+        let oidList = list.get(utcLabel) || [];
+        oidList.push(oidList);
+        return list.set(utcLabel, oidList);
+      }, new Map());
+      //dateRangeNode.setAttribute("aria-label", Array.from(oidsByDate.keys()).join("\n"));
+
+      const dateRange = {
+        start: new Date(dateFeatures[dateFeatures.length - 1].attributes[imageryLayerInfo.acquisitionDateField]),
+        end: new Date(dateFeatures[0].attributes[imageryLayerInfo.acquisitionDateField])
+      };
+      dateRangeNode.innerHTML = `${toUTCDateLabel(dateRange.start)}&nbsp;&nbsp;to&nbsp;&nbsp;${toUTCDateLabel(dateRange.end)}`;
+
+      const oids = dateFeatures.map(dateFeature => {
+        return dateFeature.attributes[imageryLayerInfo.oidField];
+      });
+      const lockedRasterMosaicRule = new MosaicRule({
+        method: "lock-raster",
+        lockRasterIds: oids,
+        where: `${imageryLayerInfo.oidField} in (${oids.join(",")})`,
+        ascending: true,
+        operation: "first"
+      });
+
+      imageryLayer.mosaicRule = lockedRasterMosaicRule;
+      baseImageryLayer.mosaicRule = lockedRasterMosaicRule;
+
+    }, console.error);
+  } else {
+    dateRangeNode.innerHTML = "...date range...";
+    imageryLayer.mosaicRule = defaultMosaicRule;
+    baseImageryLayer.mosaicRule = defaultBaseMosaicRule;
+  }
+};
+*/
+
+// const imageryTitleNode = dom.byId("imagery-title");
+// imageryTitleNode.innerHTML = imageryLayer.portalItem.title;
+
+// const imageryInfoNode = dom.byId("imagery-info");
+// imageryInfoNode.setAttribute("aria-label", imageryLayer.portalItem.snippet);
+
+//const imagerySourceLink = dom.byId("imagery-source-link");
+//imagerySourceLink.href = `https://www.arcgis.com/home/item.html?id=${imageryLayer.portalItem.id}`;
+
+
+//
+// RENDERING RULE //
+//
+// const rasterFunctionLabel = dom.byId("imagery-renderer-label");
+// rasterFunctionLabel.innerHTML = imageryLayer.renderingRule.functionName;
+
+// const rfInfo =  imageryLayer.rasterFunctionInfos.find(rfi => rfi.name === imageryLayer.renderingRule.functionName);
+// const imageryView = dom.byId("imagery-view");
+// imageryView.setAttribute("aria-label", rfInfo.description);
+
+/*const rasterFunctionSelect = dom.byId("imagery-renderer-select");
+imageryLayer.rasterFunctionInfos.forEach(rfi => {
+  domConstruct.create("option", {
+    selected: (rfi.name === imageryLayer.renderingRule.functionName),
+    innerHTML: rfi.name,
+    value: rfi.name,
+    title: rfi.description
+  }, rasterFunctionSelect);
+});
+on(rasterFunctionSelect, "change", () => {
+  imageryLayer.renderingRule = new RasterFunction({ functionName: rasterFunctionSelect.value });
+  imageryView.setAttribute("aria-label", rasterFunctionSelect.selectedOptions[0].title);
+});*/
+//imageryView.setAttribute("aria-label", rasterFunctionSelect.selectedOptions[0].title);
+
+/* const getImageryDateRange = () => {
+
+            return imageryLayer.queryTask.execute({
+              geometry: view.extent,
+              where: `(${imageryLayerInfo.categoryField} = 1) AND (${imageryLayerInfo.cloudCoverField} < ${maxCloudCover})`,
+              outStatistics: [
+                {
+                  onStatisticField: imageryLayerInfo.acquisitionDateField,
+                  outStatisticFieldName: "min",
+                  statisticType: "min"
+                },
+                {
+                  onStatisticField: imageryLayerInfo.acquisitionDateField,
+                  outStatisticFieldName: "max",
+                  statisticType: "max"
+                }
+              ]
+            }).then(datesFS => {
+              return {
+                timeExtent: {
+                  start: new Date(datesFS.features[0].attributes.min),
+                  end: new Date(datesFS.features[0].attributes.max),
+                }
+              };
+            });
+
+          };*/
+
+
+ /*initializeBookmarks: function(view){
+
+  const aoiDropdown = dom.byId("aoi-dropdown");
+  const aoiMenu = dom.byId("aoi-menu");
+  const aoiNameInput = dom.byId("aoi-name-input");
+  const aoiCreateBtn = dom.byId("aoi-create-btn");
+  const aoiMenuTitle = dom.byId("aoi-menu-title");
+  const addAOIBtn = dom.byId("add-aoi-btn");
+
+  const bookmarksLayer = view.map.layers.find(layer => {
+    return (layer.title === "Deforestation_AOI");
+  });
+  return bookmarksLayer.load().then(() => {
+    bookmarksLayer.outFields = ["*"];
+    //bookmarksLayer.visible = true;
+
+    const bookmarksByID = new Map();
+
+    const removeAOI = bookmark => {
+      bookmarksLayer.applyEdits({ deleteFeatures: [{ objectId: bookmark.objectId }] }).then(applyEditsResponse => {
+        const deleteResult = applyEditsResponse.deleteFeatureResults[0];
+        if(!deleteResult.error){
+          domConstruct.destroy(bookmark.option);
+          bookmarksByID.delete(bookmark.id);
+        } else {
+          console.error(deleteResult.error);
+        }
+      });
+    };
+
+    const createAOIFromFeature = aoiFeature => {
+
+      const bookmark = {
+        id: `aoi-${aoiFeature.attributes.OBJECTID}`,
+        objectId: aoiFeature.attributes.OBJECTID,
+        extent: aoiFeature.geometry.extent,
+        name: aoiFeature.attributes.name,
+        creator: aoiFeature.attributes.Creator,
+        creationDate: aoiFeature.attributes.CreationDate
+      };
+
+      bookmark.option = domConstruct.create("span", {
+        id: bookmark.id,
+        draggable: "true",
+        className: "aoi-link dropdown-link",
+        role: "menu-item",
+        innerHTML: bookmark.name,
+        title: `Contributed by ${bookmark.creator} on ${new Date(bookmark.creationDate).toLocaleDateString()}`
+      }, aoiMenu, "first");
+      on(bookmark.option, "click", () => {
+        view.goTo({ target: bookmark.extent });
+      });
+      on(bookmark.option, "dragstart", (dragEvt) => {
+        dragEvt.dataTransfer.setData('text/plain', bookmark.option.id);
+        dragEvt.dataTransfer.dropEffect = "move";
+      });
+
+      const removeNode = domConstruct.create("span", {
+        title: "remove AOI",
+        "data-creator": bookmark.creator,
+        className: "aoi-link-remove esri-interactive icon-ui-close right"
+      }, bookmark.option);
+      on(removeNode, "click", removeClickEvt => {
+        removeClickEvt.stopPropagation();
+        removeAOI(bookmark);
+      });
+      domClass.toggle(removeNode, "disabled", !this.isSignedInUser(bookmark.creator));
+
+      bookmarksByID.set(bookmark.id, bookmark);
+    };
+
+    const bookmarksQuery = bookmarksLayer.createQuery();
+    bookmarksQuery.set({ orderByFields: ["CreationDate ASC"] });
+    bookmarksLayer.queryFeatures(bookmarksQuery).then(aoiFS => {
+      aoiFS.features.forEach(createAOIFromFeature);
+      validateAOICreation();
+    });
+
+    on(aoiMenu, "dragover", dragOverEvt => {
+      dragOverEvt.preventDefault();
+      dragOverEvt.dataTransfer.dropEffect = "move";
+    });
+    on(aoiMenu, "drop", dropEvt => {
+      dropEvt.preventDefault();
+      const nodeId = dropEvt.dataTransfer.getData("text/plain");
+      domConstruct.place(dom.byId(nodeId), dropEvt.target, (dropEvt.layerY < (dropEvt.target.clientHeight / 2.0)) ? "before" : "after");
+    });
+
+
+    const validateScenarioNameInput = () => {
+      domClass.toggle(aoiNameInput, "input-success", aoiNameInput.validity.valid);
+      domClass.toggle(aoiNameInput, "input-error", !aoiNameInput.validity.valid);
+      domClass.toggle(addAOIBtn, "btn-disabled", !aoiNameInput.validity.valid);
+      aoiNameInput.focus();
+    };
+    on(aoiNameInput, "input", validateScenarioNameInput);
+
+    on(aoiCreateBtn, "click", () => {
+      calcite.bus.emit("modal:open", { id: "new-aoi-dialog" });
+      aoiNameInput.value = "";
+      validateScenarioNameInput();
+    });
+
+    query(".btn-suggestion").on("click", clickEvt => {
+      switch(clickEvt.target.dataset.suggestion){
+        case "place":
+          this.getPlaceName().then(placeName => {
+            aoiNameInput.value = placeName;
+            validateScenarioNameInput();
+          });
+          break;
+        case "location":
+          aoiNameInput.value = `${view.center.longitude},${view.center.latitude}`;
+          validateScenarioNameInput();
+          break;
+        case "date":
+          aoiNameInput.value = this.toUTCDateLabel(new Date()).aoi;
+          validateScenarioNameInput();
+          break;
+      }
+    });
+
+    on(addAOIBtn, "click", () => {
+
+      const newAOIFeature = {
+        geometry: Polygon.fromExtent(view.extent),
+        attributes: { name: aoiNameInput.value }
+      };
+
+      bookmarksLayer.applyEdits({ addFeatures: [newAOIFeature] }).then(applyEditsResponse => {
+        const addResult = applyEditsResponse.addFeatureResults[0];
+        if(!addResult.error){
+          const newFeatureQuery = bookmarksLayer.createQuery();
+          newFeatureQuery.set({ objectIds: [addResult.objectId] });
+          bookmarksLayer.queryFeatures(newFeatureQuery).then(newFeaturesFS => {
+            const newAOIFeature = newFeaturesFS.features[0];
+            createAOIFromFeature(newAOIFeature);
+          });
+        } else {
+          console.error(addResult.error);
+        }
+      });
+
+      aoiNameInput.value = null;
+      validateScenarioNameInput();
+      calcite.bus.emit("modal:close", { id: "new-aoi-dialog" });
+    });
+
+    let imagerySuspended = true;
+    this.on("suspended-change", options => {
+      imagerySuspended = options.suspended;
+      validateAOICreation();
+    });
+
+    this.isSignedInUser = (username) => {
+      return (this.base.portal.user != null) ? (this.base.portal.user.username === username) : false;
+    };
+
+    const validateAOICreation = () => {
+      const notSignedIn = (this.base.portal.user == null);
+      const invalid = (imagerySuspended || notSignedIn);
+      aoiMenuTitle.title = invalid ? "Zoom-in to share a place of interest..." : "";
+      domClass.toggle(aoiCreateBtn, "btn-disabled", invalid);
+
+      if(notSignedIn){
+        query(".aoi-link-remove").addClass("disabled");
+      } else {
+        query(".aoi-link-remove").forEach(removeNode => {
+          domClass.toggle(removeNode, "disabled", (this.base.portal.user.username !== removeNode.dataset.creator));
+        });
+      }
+    };
+    validateAOICreation();
+
+    this.on("portal-user-change", validateAOICreation);
+
+    domClass.remove(aoiDropdown, "btn-disabled");
+  });
+
+},*/
+
+ <!-- AREAS OF INTEREST -->
+  <!--<div id="aoi-dropdown" class="dropdown js-dropdown text-white margin-left-1 btn-disabled hide">
+    <span class="top-nav-link icon-ui-collection text-white esri-interactive js-dropdown-toggle" tabindex="0" aria-haspopup="true" aria-expanded="false">
+      Areas of Interest
+    </span>
+    <nav class="dropdown-menu dropdown-right column-6" role="menu">
+      <div id="aoi-menu"></div>
+      <div id="aoi-menu-title" class="dropdown-title">
+        <button id="aoi-create-btn" class="btn btn-small btn-fill icon-ui-maps" title="If you find an place of interest, please share it with others...">share current map extent...</button>
+      </div>
+    </nav>
+  </div>-->
+
+ /**
+ *
+ * @param view
+ * @param baseImageryLayer
+ */
+initializeBurnIndex: function(view, baseImageryLayer){
+
+  /*
+
+    Default rendering is Normalized Burn Ratio computed as NIR(Band8)-SWIR2(Band12)/NIR(Band8)+SWIR2(B12)
+
+    The NBR raw index is the most appropriate choice to detect burnt areas. It highlights burnt areas in fire zones
+    greater than 500 acres. You will need to generate a differenced NBR image by subtracting a post-fire image from
+    a pre-fire image. The resulting darker pixels represent burned areas.
+
+    burnt areas = pre - post
+
+   */
+
+
+  const burnIndexLayer = new ImageryLayer({ portalItem: { id: "5cbafcf777e845129771e601701aaae7" } });
+
+  const burnIndexPanel = domConstruct.create("div", { className: "burnindex-panel panel panel-dark" });
+  view.ui.add(burnIndexPanel, { position: "bottom-right", index: 0 });
+
+  const burnindexMap = new MapView({
+    container: domConstruct.create("div", { className: "burnindex-container" }, burnIndexPanel),
+    ui: { components: [] },
+    constraints: { snapToZoom: false },
+    map: new EsriMap({ layers: [burnIndexLayer] }),
+    extent: view.extent
+  });
+  burnindexMap.when(() => {
+    watchUtils.init(view, "stationary", stationary => {
+      if(stationary){
+        burnindexMap.extent = view.extent;
+      }
+    });
+  });
+
+
+},
+
