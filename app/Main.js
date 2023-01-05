@@ -381,9 +381,8 @@ define([
           const worldPopLayer = view.map.layers.find(layer => { return (layer.title === "Population Estimate"); });
           worldPopLayer.load().then(() => {
             // SET STATS SO THE LEGEND GETS CREATED CORRECTLY //
-            // https://landscape7.arcgis.com/arcgis/rest/services/World_Population_Estimate_2016/ImageServer
-            worldPopLayer.renderer.statistics = [[1, 131068, 0.872626699680944, 20.799764596209403]];
-            //console.info("worldPopLayer.renderer: ", worldPopLayer.renderer);
+            worldPopLayer.renderer.statistics = [[1, 500, 0.235, 2.789]];
+
 
             //
             // CROPLANDS LAYER //
