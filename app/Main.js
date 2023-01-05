@@ -380,6 +380,7 @@ define([
           //
           const worldPopLayer = view.map.layers.find(layer => { return (layer.title === "Population Estimate"); });
           worldPopLayer.load().then(() => {
+
             // SET STATS SO THE LEGEND GETS CREATED CORRECTLY //
             worldPopLayer.renderer.statistics = [[1, 500, 0.235, 2.789]];
 
