@@ -380,6 +380,33 @@ define([
           const worldPopLayer = view.map.layers.find(layer => { return (layer.title === "Population Estimate"); });
           worldPopLayer.load().then(() => {
 
+            // DON'T RENDER LOCATIONS WITH LITTLE OR NO POPULATION //
+            const maxValue = worldPopLayer.rasterInfo.statistics[0].max;
+            const popBreak = worldPopLayer.renderer.classBreakInfos[0];
+            const getPopulationSymbol = (opacity) =>{
+              const popSymbol = popBreak.symbol.clone();
+              popSymbol.outline.color = popSymbol.color.clone();
+              popSymbol.color.a = opacity;
+              return popSymbol;
+            }
+            worldPopLayer.renderer.classBreakInfos = [
+              {
+                label: "more",
+                minValue: 500, maxValue: maxValue,
+                symbol: getPopulationSymbol(0.50)
+              },
+              {
+                label: "some",
+                minValue: 1, maxValue: 500,
+                symbol: getPopulationSymbol(0.25)
+              },
+              {
+                label: "low",
+                minValue: 0, maxValue: 1,
+                symbol: getPopulationSymbol(0.00)
+              }
+            ];
+
             //
             // CROPLANDS LAYER //
             //
