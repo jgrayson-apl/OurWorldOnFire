@@ -764,7 +764,7 @@ define([
 
       const publicItemTitleToSourceItemId = {
         'Protected Areas':'ae78aeb913a343d69e950b53e29076f7',
-        'Population Estimate':'92d3005feb84428a8f85160f2451ec63',
+        'Population Estimate':'8c2db10c952e45b68efdfc78f64267b0',
         'Croplands':'1453082255024699af55c960bc3dc1fe'
       };
 
