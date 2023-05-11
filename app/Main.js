@@ -455,7 +455,7 @@ define([
           hotSpotsLocalLayer.set({outFields: ["*"]});
           view.whenLayerView(hotSpotsLocalLayer).then(hotSpotsLocalLayerView => {
 
-            const hotSpotsLayer = view.map.layers.find(layer => { return (layer.title === "MODIS Global Thermal Activity"); });
+            const hotSpotsLayer = view.map.allLayers.find(layer => { return (layer.title === "MODIS Global Thermal Activity"); });
             hotSpotsLayer.load().then(() => {
               hotSpotsLayer.set({outFields: ["*"]});
               view.whenLayerView(hotSpotsLayer).then(hotSpotsLayerView => {
@@ -610,7 +610,7 @@ define([
       const imageryLayerInfo = imageryLayerInfos.sentinel2;
 
       // IMAGERY LAYER //
-      const imageryLayer = view.map.layers.find(layer => {
+      const imageryLayer = view.map.allLayers.find(layer => {
         return (layer.title === imageryLayerInfo.layerTitle);
       });
       return imageryLayer.load().then(() => {
@@ -620,7 +620,7 @@ define([
         return view.whenLayerView(imageryLayer).then(imageryLayerView => {
 
           // BASE IMAGERY LAYER //
-          const baseImageryLayer = view.map.layers.find(layer => {
+          const baseImageryLayer = view.map.allLayers.find(layer => {
             return (layer.title === `${ imageryLayerInfo.layerTitle } [base]`);
           });
           return baseImageryLayer.load().then(() => {
@@ -916,7 +916,7 @@ define([
 
         const burnAreasToggle = document.getElementById('burn-areas-toggle');
 
-        const burnAreaLayer = view.map.layers.find(layer => { return (layer.title === "Burn Area Analysis"); });
+        const burnAreaLayer = view.map.allLayers.find(layer => { return (layer.title === "Burn Area Analysis"); });
         burnAreaLayer.load().then(() => {
           burnAreaLayer.outFields = ["*"];
 
